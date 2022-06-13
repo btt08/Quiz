@@ -1,24 +1,26 @@
-
 import { initializeApp } from "https://www.gstatic.com/firebasejs/9.8.2/firebase-app.js";
 import { getDatabase, ref, onValue, get } from 'https://www.gstatic.com/firebasejs/9.8.2/firebase-database.js';
 
 const NUM_QUESTIONS = 10;
 const DIFFICULTY = 'easy';
-const CATEGORY = '';
 const TIME_DELAY = 1000;
 let score = 0;
 
 const contentAnswers = [...document.querySelectorAll('.answer')];
 
-document.getElementById('btnStart').addEventListener('click', e => startQuiz(false));
-document.getElementById('btnStartCloud').addEventListener('click', e => startQuiz(true));
+document.getElementById('btnStart').addEventListener('click', e => startQuiz('', false));
+document.getElementById('btnStartCloud').addEventListener('click', e => startQuiz('', true));
+document.getElementById('btnStartGeneral').addEventListener('click', e => startQuiz(9, false));
+document.getElementById('btnStartSports').addEventListener('click', e => startQuiz(21, false));
+document.getElementById('btnStartAnimals').addEventListener('click', e => startQuiz(27, false));
+
 document.getElementById('btnGoHomepage').addEventListener('click', () => window.location.reload());
 
 createChart();
 
-async function startQuiz(cloud) {
+async function startQuiz(cat, cloud) {
   document.getElementById('homepage').style.display = 'none';
-  const arrQuestions = await (cloud ? getCloudQuestions() : getQuestions());
+  const arrQuestions = await (cloud ? getCloudQuestions() : getQuestions(cat));
 
   contentAnswers.forEach(
     (answer) => answer.addEventListener('click', (e) => treatAnswer(e, arrQuestions)));
@@ -101,9 +103,9 @@ function writeToLS() {
   localStorage.setItem('scores', JSON.stringify(storedData));
 }
 
-async function getQuestions() {
+async function getQuestions(cat) {
   const baseUrl = 'https://opentdb.com/api.php';
-  const fetchUrl = `${baseUrl}?amount=${NUM_QUESTIONS}&category=${CATEGORY}&difficulty=${DIFFICULTY}`;
+  const fetchUrl = `${baseUrl}?amount=${NUM_QUESTIONS}&category=${cat}&difficulty=${DIFFICULTY}`;
   try {
     const response = await fetch(fetchUrl + '&type=multiple');
     const data = await response.json();
@@ -128,12 +130,11 @@ async function getCloudQuestions() {
   };
   // Initialize Firebase
   try {
-    const app = initializeApp(firebaseConfig);
-    const database = getDatabase(app);
-    const refResults = ref(database, 'results');
-    const snapshot = await get(refResults);
+    const database = getDatabase(initializeApp(firebaseConfig));
+    const snapshot = await get(ref(database, 'results'));
 
     return shuffle(snapshot.val());
+
   } catch (error) {
     console.error(error);
     alert('Ha habido un problema conectando con la base de datos.');

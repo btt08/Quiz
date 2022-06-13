@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible"
+          content="IE=edge">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet"
+          href="./css/style.css">
+    <script defer
+            src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js">
+            </script>
+    <script defer
+            src="./js/main.js"
+            type="module"></script>
+    <title>Quiz de verano</title>
+  </head>
+  <body>
+    <div class="wrapper">
+      <header id="header-main">
+        <h1>Quiz</h1>
+      </header>
+      <main id="main-content">
+        <div id="homepage">
+          <section id="welcome-section"
+                   class="card">
+            <h3>
+              Bienvenido al quiz
+            </h3>
+            <button id="btnStart"
+                    class="btn">
+              Comenzar
+            </button>
+            <button id="btnStartCloud"
+                    class="btn">
+              Comenzar desde la nube
+            </button>
+          </section>
+          <section id="graph-section"
+                   class="card">
+            <canvas id="myChart"></canvas>
+          </section>
+        </div>
+        <div id="quiz">
+          <div class="card big">
+            <h3 id="question"
+                class="question">
+            </h3>
+            <div class="answers">
+              <button class="answer red"> </button>
+              <button class="answer yellow"> </button>
+              <button class="answer green"> </button>
+              <button class="answer blue"> </button>
+              <p id="correctAnswer"></p>
+            </div>
+          </div>
+        </div>
+        <div id="results">
+          <div class="card big">
+            <h3>Aquí están tus resultados</h3>
+            <span class="score"></span>
+            <button id="btnGoHomepage"
+                    class="btn">Volver al inicio</button>
+          </div>
+        </div>
+      </main>
+    </div>
+  </body>
+</html>

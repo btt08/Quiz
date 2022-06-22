@@ -31,8 +31,16 @@
   line-height: 60px;
 }
 
+#homepage {
+  display: none;
+}
+
 #homepage h3 {
   font-size: 1.8rem;
+}
+
+#signUp {
+  display: none;
 }
 
 .categories {

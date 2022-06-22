@@ -1,13 +1,31 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/9.8.2/firebase-app.js";
 import { getDatabase, ref, get } from 'https://www.gstatic.com/firebasejs/9.8.2/firebase-database.js';
+import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword } from 'https://www.gstatic.com/firebasejs/9.8.2/firebase-auth.js';
 
 const NUM_QUESTIONS = 10;
 const DIFFICULTY = 'easy';
 const TIME_DELAY = 1000;
 let score = 0;
 
+const firebaseConfig = {
+  apiKey: "AIzaSyBoge9h2RF4dv-pGKdWw22DCZZuxwaciZQ",
+  authDomain: "quiz-4502a.firebaseapp.com",
+  databaseURL: "https://quiz-4502a-default-rtdb.europe-west1.firebasedatabase.app",
+  projectId: "quiz-4502a",
+  storageBucket: "quiz-4502a.appspot.com",
+  messagingSenderId: "574674803141",
+  appId: "1:574674803141:web:31fc94b601db44dc8213ac",
+  measurementId: "G-S8Y1M92JHS"
+};
+
 const contentAnswers = [...document.querySelectorAll('.answer')];
 
+document.getElementById('formLogin').addEventListener('submit', (e) => e.preventDefault());
+document.getElementById('formSignUp').addEventListener('submit', (e) => e.preventDefault());
+
+document.getElementById('btnSubmitLogIn').addEventListener('click', loginUser);
+document.getElementById('btnSubmitSignUp').addEventListener('click', signUpUser);
+document.getElementById('btnSignUp').addEventListener('click', showSignUp);
 document.getElementById('btnStart').addEventListener('click', e => startQuiz('', false));
 document.getElementById('btnStartCloud').addEventListener('click', e => startQuiz('', true));
 document.getElementById('btnStartGeneral').addEventListener('click', e => startQuiz(9, false));
@@ -17,6 +35,50 @@ document.getElementById('btnStartAnimals').addEventListener('click', e => startQ
 document.getElementById('btnGoHomepage').addEventListener('click', () => window.location.reload());
 
 createChart();
+
+function showSignUp() {
+  document.getElementById('login').style.display = 'none';
+  document.getElementById('signUp').style.display = 'block';
+}
+
+function loginUser(e) {
+  e.preventDefault();
+  const auth = getAuth(initializeApp(firebaseConfig));
+  const email = document.getElementById('mail').value;
+  const pass = document.getElementById('pwd').value;
+  //funcion para loguearse
+  signInWithEmailAndPassword(auth, email, pass)
+    .then(response => {
+      //si login ha ido correctamente
+      document.getElementById('login').style.display = 'none';
+      document.getElementById('homepage').style.display = 'block';
+
+      console.log('USER LOGUEADO CORRECTAMENTE', response);
+    })
+    .catch(error => alert(error.code, error.message));
+}
+
+function signUpUser(e) {
+  e.preventDefault();
+
+  const form = document.getElementById('formSignUp');
+  const username = form.userName.value;
+  const email = form.mailSignUp.value;
+  const pass = form.pwd1.value;
+  const pass2 = form.pwd2.value;
+
+  const auth = getAuth(initializeApp(firebaseConfig));
+
+  if (pass !== '' && pass2 !== '' && pass === pass2) {
+    createUserWithEmailAndPassword(auth, email, pass)
+      .then(response => {
+        console.log('Usuario creado correctamente', response)
+      })
+      .catch(error => alert(error.code, error.message));
+  } else {
+    alert('las contraseñas no coinciden')
+  }
+}
 
 async function startQuiz(cat, cloud) {
   document.getElementById('homepage').style.display = 'none';
@@ -113,16 +175,7 @@ async function getQuestions(cat) {
 }
 
 async function getCloudQuestions() {
-  const firebaseConfig = {
-    apiKey: "AIzaSyBoge9h2RF4dv-pGKdWw22DCZZuxwaciZQ",
-    authDomain: "quiz-4502a.firebaseapp.com",
-    databaseURL: "https://quiz-4502a-default-rtdb.europe-west1.firebasedatabase.app",
-    projectId: "quiz-4502a",
-    storageBucket: "quiz-4502a.appspot.com",
-    messagingSenderId: "574674803141",
-    appId: "1:574674803141:web:31fc94b601db44dc8213ac",
-    measurementId: "G-S8Y1M92JHS"
-  };
+
 
   try {
     const database = getDatabase(initializeApp(firebaseConfig));

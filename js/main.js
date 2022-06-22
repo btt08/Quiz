@@ -38,7 +38,7 @@ createChart();
 
 function showSignUp() {
   document.getElementById('login').style.display = 'none';
-  document.getElementById('signUp').style.display = 'block';
+  document.getElementById('signUp').style.display = 'flex';
 }
 
 function loginUser(e) {
@@ -72,7 +72,8 @@ function signUpUser(e) {
   if (pass !== '' && pass2 !== '' && pass === pass2) {
     createUserWithEmailAndPassword(auth, email, pass)
       .then(response => {
-        console.log('Usuario creado correctamente', response)
+        alert('Usuario creado correctamente');
+        window.location.reload();
       })
       .catch(error => alert(error.code, error.message));
   } else {

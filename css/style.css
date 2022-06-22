@@ -43,6 +43,26 @@
   display: none;
 }
 
+#formLogin,
+#formSignUp {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  font-size: 1.2em;
+}
+
+#formLogin label,
+#formSignUp label {
+  margin-top: 15px;
+}
+
+#formLogin input,
+#formSignUp input {
+  font-size: 1.2em;
+  margin: 10px;
+  padding: 5px 10px;
+}
+
 .categories {
   margin-top: 10px;
   display: grid;
@@ -144,6 +164,8 @@
 }
 
 .btn {
+  max-height: 80px;
+  margin: 10px auto;
   min-width: 120px;
   padding: 15px;
   background-color: var(--main-dark-color);
@@ -152,7 +174,6 @@
   border: none;
   border-radius: 5px;
 }
-
 
 .score {
   font-size: 5rem;

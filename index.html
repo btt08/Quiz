@@ -30,34 +30,50 @@
         <div id="login"
              class="card">
           <form id="formLogin">
-            <label for="mail">Email</label>
+            <!-- <label for="mail">Email</label> -->
             <input type="email"
+                   placeholder="Email"
                    name="mail"
                    id="mail">
-            <label for="pwd">Password</label>
+            <!-- <label for="pwd">Password</label> -->
             <input type="password"
+                   placeholder="Password"
                    name="pwd"
                    id="pwd">
-            <button id="btnSubmitLogIn">Log in</button>
+            <div class="btns">
+              <button id="btnSubmitLogIn"
+                      class="btn">Log in</button>
+              <button id="btnSignUp"
+                      class="btn">Sign Up</>
+            </div>
           </form>
-          <button id="btnSignUp">Sign Up</>
         </div>
         <div id="signUp"
              class="card">
           <form id="formSignUp">
-            <label for="userName">Username</label>
+            <!-- <label for="userName">Username</label> -->
             <input type="text"
+                   placeholder="Username"
                    id="userName">
-            <label for="mailSignUp">Email</label>
+            <!-- <label for="mailSignUp">Email</label> -->
             <input type="email"
+                   placeholder="Email"
                    id="mailSignUp">
-            <label for="pwd1">Password</label>
+            <!-- <label for="pwd1">Password</label> -->
             <input type="password"
+                   placeholder="Password"
                    id="pwd1">
-            <label for="pwd2">Repetir password</label>
+            <!-- <label for="pwd2">Repetir password</label> -->
             <input type="password"
+                   placeholder="Repetir password"
                    id="pwd2">
-            <button id="btnSubmitSignUp">Sign Up</button>
+            <div class="btns">
+              <button id="btnSubmitSignUp"
+                      class="btn">
+                <input type="reset"
+                       value="Reset"
+                       class="btn">
+            </div>
           </form>
         </div>
         <div id="homepage">
@@ -85,7 +101,7 @@
               </button>
               <button id="btnStartGeneral"
                       class="btn">
-                Cultura general <i class="fa-solid fa-earth-americas"></i>
+                General <i class="fa-solid fa-earth-americas"></i>
               </button>
             </div>
           </section>

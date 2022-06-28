@@ -64,10 +64,9 @@
 }
 
 .categories {
-  margin-top: 10px;
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  gap: 10px;
+  gap: 5px;
 }
 
 #graph-section {
@@ -156,7 +155,6 @@
   flex-direction: column;
   align-items: center;
   justify-content: space-around;
-  gap: 10px;
 }
 
 .big {

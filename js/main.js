@@ -1,6 +1,8 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/9.8.2/firebase-app.js";
-import { getDatabase, ref, get } from 'https://www.gstatic.com/firebasejs/9.8.2/firebase-database.js';
+import { getDatabase, ref, get, set } from 'https://www.gstatic.com/firebasejs/9.8.2/firebase-database.js';
 import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword } from 'https://www.gstatic.com/firebasejs/9.8.2/firebase-auth.js';
+
+window.addEventListener('load', events);
 
 const NUM_QUESTIONS = 10;
 const DIFFICULTY = 'easy';
@@ -20,25 +22,24 @@ const firebaseConfig = {
 
 const contentAnswers = [...document.querySelectorAll('.answer')];
 
-document.getElementById('formLogin').addEventListener('submit', (e) => e.preventDefault());
-document.getElementById('formSignUp').addEventListener('submit', (e) => e.preventDefault());
-
-document.getElementById('btnSubmitLogIn').addEventListener('click', loginUser);
-document.getElementById('btnSubmitSignUp').addEventListener('click', signUpUser);
-document.getElementById('btnSignUp').addEventListener('click', showSignUp);
-document.getElementById('btnStart').addEventListener('click', e => startQuiz('', false));
-document.getElementById('btnStartCloud').addEventListener('click', e => startQuiz('', true));
-document.getElementById('btnStartGeneral').addEventListener('click', e => startQuiz(9, false));
-document.getElementById('btnStartSports').addEventListener('click', e => startQuiz(21, false));
-document.getElementById('btnStartAnimals').addEventListener('click', e => startQuiz(27, false));
-
-document.getElementById('btnGoHomepage').addEventListener('click', () => window.location.reload());
 
 createChart();
 
-function showSignUp() {
-  document.getElementById('login').style.display = 'none';
-  document.getElementById('signUp').style.display = 'flex';
+function events() {
+  document.getElementById('formLogin').addEventListener('submit', (e) => e.preventDefault());
+  document.getElementById('formSignUp').addEventListener('submit', (e) => e.preventDefault());
+
+  document.getElementById('btnSubmitLogIn').addEventListener('click', loginUser);
+  document.getElementById('btnSubmitSignUp').addEventListener('click', signUpUser);
+  document.getElementById('btnSignUp').addEventListener('click', () => goTo('signUp', 'flex'));
+  document.getElementById('btnStart').addEventListener('click', e => startQuiz('', false));
+  document.getElementById('btnStartCloud').addEventListener('click', e => startQuiz('', true));
+  document.getElementById('btnStartGeneral').addEventListener('click', e => startQuiz(9, false));
+  document.getElementById('btnStartSports').addEventListener('click', e => startQuiz(21, false));
+  document.getElementById('btnStartAnimals').addEventListener('click', e => startQuiz(27, false));
+
+  document.getElementById('btnGoHomepage').addEventListener('click', () => goTo('homepage', 'block'));
+  document.getElementById('btnBackSignUp').addEventListener('click', reload);
 }
 
 function loginUser(e) {
@@ -62,22 +63,42 @@ function signUpUser(e) {
   e.preventDefault();
 
   const form = document.getElementById('formSignUp');
-  const username = form.userName.value;
+  const userName = form.userName.value;
   const email = form.mailSignUp.value;
   const pass = form.pwd1.value;
   const pass2 = form.pwd2.value;
+
+  const userData = {
+    userName,
+    email,
+    pass
+  };
 
   const auth = getAuth(initializeApp(firebaseConfig));
 
   if (pass !== '' && pass2 !== '' && pass === pass2) {
     createUserWithEmailAndPassword(auth, email, pass)
       .then(response => {
+        userData.uid = response.user.uid;
+        // console.log(userData.uid)
+        createUserDB(userData);
         alert('Usuario creado correctamente');
-        window.location.reload();
+        setTimeout(() => goTo('login', 'flex'), 500);
       })
       .catch(error => alert(error.code, error.message));
+    // .finally(reload);
   } else {
     alert('las contraseñas no coinciden')
+  }
+}
+
+function createUserDB(userData) {
+  try {
+    const database = getDatabase(initializeApp(firebaseConfig));
+    // console.log(userData);
+    set(ref(database, 'users/' + userData.uid), userData);
+  } catch (error) {
+    alert(error.code, error.message);
   }
 }
 
@@ -122,6 +143,7 @@ function treatAnswer(e, arrQuestions) {
       decolourAnswers();
       nextQuestion(arrQuestions);
     } else {
+      decolourAnswers();
       document.getElementById('quiz').style.display = 'none';
       document.querySelector('.score').innerHTML = `<sup>${score}</sup>/<sub>${NUM_QUESTIONS}</sub>`;
       writeToLS();
@@ -176,8 +198,6 @@ async function getQuestions(cat) {
 }
 
 async function getCloudQuestions() {
-
-
   try {
     const database = getDatabase(initializeApp(firebaseConfig));
     const snapshot = await get(ref(database, 'results'));
@@ -190,6 +210,18 @@ async function getCloudQuestions() {
     window.location.reload();
   }
 }
+
+function goTo(destination, style) {
+  document.getElementById('login').style.display = 'none';
+  document.getElementById('signUp').style.display = 'none';
+  document.getElementById('quiz').style.display = 'none';
+  document.getElementById('results').style.display = 'none';
+  document.getElementById('homepage').style.display = 'none';
+
+  document.getElementById(destination).style.display = style;
+}
+
+function reload() { window.location.reload(); }
 
 /* Fisher–Yates shuffle algorithm */
 function shuffle(arr) {

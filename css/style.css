@@ -20,11 +20,24 @@
 }
 
 #header-main {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
   width: 100%;
   min-height: 60px;
   padding-left: 1.5em;
   background-color: var(--main-dark-color);
   color: #fff;
+}
+
+#header-main i {
+  display: none;
+}
+
+.fa-right-from-bracket {
+  cursor: pointer;
+  margin-right: 2em;
+  font-size: 3em;
 }
 
 #header-main h1 {

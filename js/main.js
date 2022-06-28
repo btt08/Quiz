@@ -22,12 +22,15 @@ const firebaseConfig = {
 
 const contentAnswers = [...document.querySelectorAll('.answer')];
 
-
 createChart();
 
 function events() {
   document.getElementById('formLogin').addEventListener('submit', (e) => e.preventDefault());
   document.getElementById('formSignUp').addEventListener('submit', (e) => e.preventDefault());
+
+  document.querySelector('#header-main > i').addEventListener('click', () => {
+    window.confirm('¿Seguro que desea salir?') ? reload() : '';
+  })
 
   document.getElementById('btnSubmitLogIn').addEventListener('click', loginUser);
   document.getElementById('btnSubmitSignUp').addEventListener('click', signUpUser);
@@ -49,12 +52,13 @@ function loginUser(e) {
   const pass = document.getElementById('pwd').value;
   //funcion para loguearse
   signInWithEmailAndPassword(auth, email, pass)
-    .then(response => {
+    .then(async response => {
       //si login ha ido correctamente
       document.getElementById('login').style.display = 'none';
+      document.querySelector('#header-main > i').style.display = 'block';
       document.getElementById('homepage').style.display = 'block';
-
-      console.log('USER LOGUEADO CORRECTAMENTE', response);
+      const userName = await getUserData(response.user.uid);
+      document.querySelector('#welcome-section > h3').textContent = `Bienvenido ${userName}`;
     })
     .catch(error => alert(error.code, error.message));
 }
@@ -80,13 +84,11 @@ function signUpUser(e) {
     createUserWithEmailAndPassword(auth, email, pass)
       .then(response => {
         userData.uid = response.user.uid;
-        // console.log(userData.uid)
         createUserDB(userData);
         alert('Usuario creado correctamente');
         setTimeout(() => goTo('login', 'flex'), 500);
       })
       .catch(error => alert(error.code, error.message));
-    // .finally(reload);
   } else {
     alert('las contraseñas no coinciden')
   }
@@ -203,12 +205,17 @@ async function getCloudQuestions() {
     const snapshot = await get(ref(database, 'results'));
 
     return shuffle(snapshot.val());
-
   } catch (error) {
     console.error(error);
     alert('Ha habido un problema conectando con la base de datos.');
-    window.location.reload();
+    reload();
   }
+}
+
+async function getUserData(userID) {
+  const database = getDatabase(initializeApp(firebaseConfig));
+  const snapshot = await get(ref(database, 'users/' + userID));
+  return snapshot.val().userName;
 }
 
 function goTo(destination, style) {
